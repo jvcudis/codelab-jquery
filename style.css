@@ -1,0 +1,86 @@
+body {
+    background-color: #000000;
+    color: #F0F0F0;
+    font-family: 'Droid Sans TV',arial,serif;
+    margin: 0;
+    overflow: hidden;
+    padding: 0;
+}
+h1, h2, h3, h4, h5, ul, li, p {
+    margin: 0;
+    padding: 0;
+}
+ul {
+    list-style-type: none;
+}
+#keypress-dialog {
+    font-weight: bold;
+}
+#keypress-content {
+    font-weight: bold;
+}
+#main {
+    border: 0 solid #EEEEEE;
+    height: 470px;
+    padding: 15px 15px 40px;
+    white-space: nowrap;
+}
+#main h3 {
+    color: #EE6655;
+    font-size: 28px;
+}
+.center {
+    margin: 0 auto;
+    overflow: hidden;
+    width: 1050px;
+}
+
+#main ul {
+    margin: 0 auto 5px;
+    padding: 5px 10px 5px;
+    width: 1000px;
+    border-bottom: 1px solid white;
+}
+#main li {
+    display: inline-block;
+}
+#main .item {
+}
+.item {
+    border: 3px solid rgba(200, 200, 200, 0.6);
+    text-align: center;
+}
+.item-page, #middle-zone {
+  height: 400px;
+}
+#top-zone, #middle-zone, #bottom-zone {
+    overflow: hidden;
+}
+#top-zone .item {
+    background-color: rgba(50, 50, 50, 0.4);
+    font-size: 20px;
+    font-weight: bold;
+    margin: 0 15px 0 0;
+    padding: 10px 0;
+    width: 300px;
+}
+#middle-zone .item {
+    background-color: rgba(50, 50, 50, 0.4);
+    font-size: 20px;
+    font-weight: bold;
+    margin: 5px 15px 0 0;
+    padding: 40px 0;
+    width: 200px;
+}
+#bottom-zone .item {
+  border: none;
+}
+.item-row {
+}
+#top-zone .item-selected, #middle-zone .item-selected {
+  background-color: #6391DE;
+  border-color: #F0F0F0;
+}
+#bottom-zone .item-selected {
+  background-color: #6391DE;
+}
