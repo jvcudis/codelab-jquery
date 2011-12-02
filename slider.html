@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<head>
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+  <title>JQuery TV Lib - Slider Control</title>
+  <!-- Bootstrapping JQuery and Google TV UI Library. -->
+  <link rel="stylesheet" href="static/tv-css/controls.css" type="text/css" media="screen" charset="utf-8"/>
+  <script type="text/javascript" src="static/jquery-1.7.1.js"></script>
+  <script type="text/javascript" src="static/underscore.js"></script>
+  <script type="text/javascript" src="static/tv-js/slider.js"></script>
+  <script type="text/javascript" src="static/tv-js/gtvcore.js"></script>
+  <script type="text/javascript" src="static/tv-js/keycontrol.js"></script>
+  <link rel="stylesheet" href="style.css" type="text/css" media="screen" charset="utf-8"/>
+</head>
+<body>
+  <div id="middle-zone">
+    <div></div>
+  </div>
+  <script type="text/javascript">
+    makePage = function(topParent) {
+      var keyController = new gtv.jq.KeyController();
+      keyController.start();
+
+      var container = $('<div></div>').addClass('sliding-container');
+      topParent.append(container);
+      container = container;
+
+      var styleClasses = {
+        page: 'slider-item-page-style',
+        row: 'slider-item-row-style',
+        itemDiv: 'slider-item-div-style',
+        item: 'slider-item-style',
+        selected: 'item-hover'
+      };
+
+      var photoCount = 15;
+      var pageItems = [];
+      for (var i = 0; i < photoCount; i++) {
+        var dcu = $('<p></p>').html("DCU" + i);
+        var description = $('<p></p>').append('DCU ' + i).addClass('slider-text-title');
+        var descDiv = $('<div></div>').addClass('slider-text-desc');
+        descDiv.append(description);
+        pageItems.push({item: dcu, caption: descDiv});
+      }
+
+      var createParams = {
+        containerId: 'slider-container',
+        styles: styleClasses,
+        keyController: keyController,
+      };
+
+      var slidingControl = new gtv.jq.SlidingControl(createParams);
+      var showParams = {
+        topParent: container,
+        contents: {
+          captionItems: pageItems
+        }
+      };
+      slidingControl.showControl(showParams);
+    };
+
+    makePage($("#middle-zone"));
+  </script>
+</body>

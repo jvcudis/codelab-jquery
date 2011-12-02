@@ -8,6 +8,7 @@
   <script type="text/javascript" src="static/underscore.js"></script>
   <script type="text/javascript" src="static/tv-js/gtvcore.js"></script>
   <script type="text/javascript" src="static/tv-js/keycontrol.js"></script>
+  <script type="text/javascript" src="static/tv-js/slider.js"></script>
   <link rel="stylesheet" href="style.css" type="text/css" media="screen" charset="utf-8"/>
 </head>
 <body>
@@ -22,40 +23,7 @@
       </div>
     </ul>
     <ul id="middle-zone">
-      <div class="item-page" id="1">
-      <div class="item-row">
-        <li class="item-parent"><div class="item">DCU 1</div></li>
-        <li class="item-parent"><div class="item">DCU 2</div></li>
-        <li class="item-parent"><div class="item">DCU 3</div></li>
-        <li class="item-parent"><div class="item">DCU 4</div></li>
-      </div>
-      <div class="item-row">
-        <li class="item-parent"><div class="item">DCU 5</div></li>
-        <li class="item-parent"><div class="item">DCU 6</div></li>
-        <li class="item-parent"><div class="item">DCU 7</div></li>
-        <li class="item-parent"><div class="item">DCU 8</div></li>
-      </div>
-      <div class="item-row">
-        <li class="item-parent"><div class="item">DCU 9</div></li>
-        <li class="item-parent"><div class="item">DCU 10</div></li>
-        <li class="item-parent"><div class="item">DCU 11</div></li>
-        <li class="item-parent"><div class="item">DCU 12</div></li>
-      </div>
-      </div>
-      <div class="item-page" id="2">
-      <div class="item-row">
-        <li class="item-parent"><div class="item">DCU 13</div></li>
-        <li class="item-parent"><div class="item">DCU 14</div></li>
-        <li class="item-parent"><div class="item">DCU 15</div></li>
-        <li class="item-parent"><div class="item">DCU 16</div></li>
-      </div>
-      <div class="item-row">
-        <li class="item-parent"><div class="item">DCU 17</div></li>
-        <li class="item-parent"><div class="item">DCU 18</div></li>
-        <li class="item-parent"><div class="item">DCU 19</div></li>
-        <li class="item-parent"><div class="item">DCU 20</div></li>
-      </div>
-      </div>
+      <div></div>
     </ul>
     <ul id="bottom-zone">
     <h3>Notices</h3>
@@ -71,69 +39,17 @@
 
   var App = {}
 
-  App.lastItem = null;
-  App.curPage = 0;
-  App.prevPage = 0;
-
+  /**
+   * Describe function here.
+   * @param {jQuery.Element} keyName Description here.
+   * @return {gtv.jq.Selection} Selection object Description here.
+   */
   App.createKeypressHandler = function(keyName) {
     return function() {
       var dialog = $('#keypress-dialog');
       dialog.html(keyName);
       return new gtv.jq.Selection(keyName);
     }
-  };
-
-  App.scrollItemToItem = function(item, scrollToItem) {
-    // Translate new item to the other item's position
-    var itemOffsetW = item.position().left - scrollToItem.position().left;
-    item.parent().parent().css('-webkit-transform','translate(-' + itemOffsetW + 'px, 0)');
-  };
-
-  App.scrollLeftRight = function(oldItem, newItem) {
-    /*--Executed when the left/right key is pressed while last item from right or left are selected--*/
-    if (!newItem.length) {
-      return new gtv.jq.Selection('none');
-    }
-    // Check if new item fits into parent elements viewport
-    var rowEl = newItem.parent().parent().parent();
-    var rowLeft = rowEl.position().left;
-    var rowRight = rowLeft + rowEl.width();
-    var newItemLeft = newItem.position().left;
-    var newItemRight = newItemLeft + newItem.width();
-    if (newItemRight > rowRight) {
-      // Scrolling right. Match item to first item's position.
-      App.scrollItemToItem(newItem, newItem.parent().parent().children().first());
-      App.lastItem = App.lastItem || oldItem;
-    }
-    else if (newItemLeft < rowLeft) {
-      // Scrolling left. Match item to last item's position.
-      App.scrollItemToItem(newItem, App.lastItem);
-    }
-    return new gtv.jq.Selection('none');
-  };
-
-  App.scrollUpDown = function(oldItem, newItem) {
-    if (!newItem) {
-      return new gtv.jq.Selection('none');
-    }
-    var pageEl = newItem.parent().parent().parent();
-    var pageNo = pageEl.attr('id').match(/\d+/)[0];
-    //Change page number
-    App.curPage = pageNo;
-    App.prevPage = pageNo - 1;
-
-    if(App.curPage == App.prevPage + 1) {
-      $('div').filter('#'+ App.prevPage).hide();
-      $('div').filter('#'+ App.curPage).show();
-    }
-    else if(App.curPage == App.prevPage - 1) {
-      $('div').filter('#'+ App.curPage).hide();
-      $('div').filter('#'+ App.prevPage).show();
-    }
-    else {
-      //Do nothing
-    }
-    return new gtv.jq.Selection('none');
   };
 
   App.enterKeyFunction = function(item) {
@@ -143,84 +59,101 @@
     return new gtv.jq.Selection('none');
   };
 
+  App.makePage = function(topParent) {
+    var container = $('<div></div>').addClass('sliding-container');
+    topParent.append(container);
+    container = container;
+
+    var styleClasses = {
+      page: 'slider-item-page-style',
+      row: 'slider-item-row-style',
+      itemDiv: 'slider-item-div-style',
+      item: 'slider-item-style',
+      selected: 'item-hover'
+    };
+
+    var photoCount = 50;
+    var pageItems = [];
+    for (var i = 0; i < photoCount; i++) {
+      var dcu = $('<p></p>')
+        .html("DCU" + i);
+      var description = $('<p></p>').append('DCU ' + i + "description here.")
+        .addClass('slider-text-title');
+      var descDiv = $('<div></div>').addClass('slider-text-desc');
+        descDiv.append(description);
+      pageItems.push({item: dcu, caption: descDiv});
+    }
+
+    var createParams = {
+      containerId: 'slider-container',
+      styles: styleClasses,
+      keyController: keyController,
+      choiceCallback: App.enterKeyFunction
+    };
+
+    var slidingControl = new gtv.jq.SlidingControl(createParams);
+    var showParams = {
+      topParent: container,
+      contents: {
+        captionItems: pageItems
+      }
+    };
+    slidingControl.showControl(showParams);
+  };
+
   var keyController = new gtv.jq.KeyController();
   /* Add callback functions to keymap */
   keyController.setGlobalKeyMapping({
-      8: App.createKeypressHandler('BACKSPACE'),
-      9: App.createKeypressHandler('TAB'),
-      13: App.createKeypressHandler('ENTER'),
-      37: App.createKeypressHandler('LEFT'),
-      38: App.createKeypressHandler('UP'),
-      39: App.createKeypressHandler('RIGHT'),
-      40: App.createKeypressHandler('DOWN')
-    });
-    keyController.start();
+    8: App.createKeypressHandler('BACKSPACE'),
+    9: App.createKeypressHandler('TAB'),
+    13: App.createKeypressHandler('ENTER'),
+    37: App.createKeypressHandler('LEFT'),
+    38: App.createKeypressHandler('UP'),
+    39: App.createKeypressHandler('RIGHT'),
+    40: App.createKeypressHandler('DOWN')
+  });
+  keyController.start();
 
-    /* Define the behavior zones of the page */
-    var topZone = new gtv.jq.KeyBehaviorZone({
-      containerSelector: '#top-zone',
-      navSelectors: {
-        item: '.item',
-        itemParent: '.item-parent',
-        itemRow: '.item-row',
-        itemPage: null
-      },
-      selectionClasses: {
-        basic: 'item-selected'
-      },
-      keyMapping: {
-        13: App.enterKeyFunction,
-        37: App.scrollLeftRight,
-        39: App.scrollLeftRight
-      },
-      actions: {
-      },
-      useGeometry: false
-    });
+  /* Define the behavior zones of the page */
+  var topZone = new gtv.jq.KeyBehaviorZone({
+    containerSelector: '#top-zone',
+    navSelectors: {
+      item: '.item',
+      itemParent: '.item-parent',
+      itemRow: '.item-row',
+      itemPage: null
+    },
+    selectionClasses: {
+      basic: 'item-selected'
+    },
+    keyMapping: {
+      13: App.enterKeyFunction
+    },
+    actions: {},
+    useGeometry: false
+  });
 
-    var middleZone = new gtv.jq.KeyBehaviorZone({
-      containerSelector: '#middle-zone',
-      navSelectors: {
-        item: '.item',
-        itemParent: '.item-parent',
-        itemRow: '.item-row',
-        itemPage: '.item-page'
-      },
-      selectionClasses: {
-        basic: 'item-selected'
-      },
-      keyMapping: {
-        13: App.enterKeyFunction,
-        38: App.scrollUpDown,
-        40: App.scrollUpDown
-      },
-      actions: {
-      },
-      useGeometry: true,
-      selectHidden: true
-    });
+  var bottomZone = new gtv.jq.KeyBehaviorZone({
+    containerSelector: '#bottom-zone',
+    navSelectors: {
+      item: '.item',
+      itemParent: '.item-parent',
+      itemRow: '.item-row',
+      itemPage: null
+    },
+    selectionClasses: {
+      basic: 'item-selected'
+    },
+    keyMapping: {
+      13: App.enterKeyFunction,
+    },
+    actions: {},
+    useGeometry: false
+  });
 
-    var bottomZone = new gtv.jq.KeyBehaviorZone({
-      containerSelector: '#bottom-zone',
-      navSelectors: {
-        item: '.item',
-        itemParent: '.item-parent',
-        itemRow: '.item-row',
-        itemPage: null
-      },
-      selectionClasses: {
-        basic: 'item-selected'
-      },
-      keyMapping: {
-        13: App.enterKeyFunction,
-      },
-      actions: {
-      },
-      useGeometry: false
-    });
+  keyController.addBehaviorZone(topZone, true);
+  keyController.addBehaviorZone(bottomZone);
 
-    keyController.addBehaviorZone(topZone, true);
-    keyController.addBehaviorZone(middleZone);
-    keyController.addBehaviorZone(bottomZone);
-  </script>
+  App.makePage($("#middle-zone"));
+</script>
 </body>
