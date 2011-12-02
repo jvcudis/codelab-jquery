@@ -8,6 +8,7 @@
   <script type="text/javascript" src="static/underscore.js"></script>
   <script type="text/javascript" src="static/tv-js/gtvcore.js"></script>
   <script type="text/javascript" src="static/tv-js/keycontrol.js"></script>
+  <script type="text/javascript" src="static/tv-js/slider.js"></script>
   <link rel="stylesheet" href="style.css" type="text/css" media="screen" charset="utf-8"/>
 </head>
 <body>
@@ -22,14 +23,11 @@
       </div>
     </ul>
     <ul id="middle-zone">
-      <div class="item-page" id="1">
       <div class="item-row">
         <li class="item-parent"><div class="item">DCU 1</div></li>
         <li class="item-parent"><div class="item">DCU 2</div></li>
         <li class="item-parent"><div class="item">DCU 3</div></li>
         <li class="item-parent"><div class="item">DCU 4</div></li>
-      </div>
-      <div class="item-row">
         <li class="item-parent"><div class="item">DCU 5</div></li>
         <li class="item-parent"><div class="item">DCU 6</div></li>
         <li class="item-parent"><div class="item">DCU 7</div></li>
@@ -40,10 +38,6 @@
         <li class="item-parent"><div class="item">DCU 10</div></li>
         <li class="item-parent"><div class="item">DCU 11</div></li>
         <li class="item-parent"><div class="item">DCU 12</div></li>
-      </div>
-      </div>
-      <div class="item-page" id="2">
-      <div class="item-row">
         <li class="item-parent"><div class="item">DCU 13</div></li>
         <li class="item-parent"><div class="item">DCU 14</div></li>
         <li class="item-parent"><div class="item">DCU 15</div></li>
@@ -54,7 +48,10 @@
         <li class="item-parent"><div class="item">DCU 18</div></li>
         <li class="item-parent"><div class="item">DCU 19</div></li>
         <li class="item-parent"><div class="item">DCU 20</div></li>
-      </div>
+        <li class="item-parent"><div class="item">DCU 21</div></li>
+        <li class="item-parent"><div class="item">DCU 22</div></li>
+        <li class="item-parent"><div class="item">DCU 23</div></li>
+        <li class="item-parent"><div class="item">DCU 24</div></li>
       </div>
     </ul>
     <ul id="bottom-zone">
@@ -75,6 +72,11 @@
   App.curPage = 0;
   App.prevPage = 0;
 
+  /**
+   * Describe function here.
+   * @param {jQuery.Element} keyName Description here.
+   * @return {gtv.jq.Selection} Selection object Description here.
+   */
   App.createKeypressHandler = function(keyName) {
     return function() {
       var dialog = $('#keypress-dialog');
@@ -136,6 +138,10 @@
     return new gtv.jq.Selection('none');
   };
 
+  App.scrollPageLeftRight = function(oldItem, newItem) {
+    return new gtv.jq.Selection('none');
+  }
+
   App.enterKeyFunction = function(item) {
     var selected = item.html();
     var dialog = $('#keypress-content');
@@ -184,20 +190,22 @@
         item: '.item',
         itemParent: '.item-parent',
         itemRow: '.item-row',
-        itemPage: '.item-page'
+        itemPage: null
       },
       selectionClasses: {
         basic: 'item-selected'
       },
       keyMapping: {
         13: App.enterKeyFunction,
-        38: App.scrollUpDown,
-        40: App.scrollUpDown
+        37: App.scrollPageLeftRight,
+        39: App.scrollPageLeftRight
+        //38: App.scrollUpDown,
+        //40: App.scrollUpDown
       },
       actions: {
       },
-      useGeometry: true,
-      selectHidden: true
+      useGeometry: false,
+      selectHidden: false
     });
 
     var bottomZone = new gtv.jq.KeyBehaviorZone({
